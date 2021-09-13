@@ -1,5 +1,9 @@
 import React, {useState} from "react";
-import {authService, createNewAccount, signInAccount} from "fbase.js"
+import {
+authService, 
+createNewAccount, 
+signInAccount, 
+popupSignInWithProviders} from "fbase.js"
 
 const Auth = () => {
   const [email, setEmail] = useState("");
@@ -34,6 +38,12 @@ const Auth = () => {
       })
     }
   };
+  const onSigninClick = ({target : {name}}) => {
+    popupSignInWithProviders(name).then((resolved)=>{
+    }).catch( e => {
+      console.log(e.message);
+    })
+  }
   return (
     <div>
       <form onSubmit={onSubmit}>
@@ -58,8 +68,8 @@ const Auth = () => {
       <div onClick={toggleAccount}>{newAccount ? "CreateNewAccount" : "Sign In"} </div>
       <div>{error}</div>
       <div>
-        <button>Continue with Google</button>
-        <button>Continue with Github</button>
+        <button name="Google" onClick={onSigninClick}>Continue with Google</button>
+        <button name="GitHub" onClick={onSigninClick}>Continue with Github</button>
       </div>
     </div>
   );

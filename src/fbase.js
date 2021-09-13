@@ -1,6 +1,12 @@
 import { initializeApp } from "firebase/app";
 
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword  } from "firebase/auth";
+import { getAuth, 
+createUserWithEmailAndPassword, 
+signInWithEmailAndPassword,
+signInWithPopup,
+GoogleAuthProvider,
+GithubAuthProvider
+ } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDaLLllqTNcmnuUw9Pt53NBiVfq3uA9zg4",
@@ -15,6 +21,22 @@ const app = initializeApp(firebaseConfig);
 
 export const authService = getAuth(); 
 
+
+export const popupSignInWithProviders = provider_Name => {
+  console.log(provider_Name);
+  let provider;
+  switch(provider_Name){
+    case "GitHub":
+      provider = new GithubAuthProvider();
+      break;
+    case "Google":
+      provider = new GoogleAuthProvider();
+      break;
+    default: 
+      return new Error("name of Provider is not available");
+  }
+  return signInWithPopup(authService, provider);
+}
 
 export const createNewAccount = (email, password) => {
   return createUserWithEmailAndPassword(authService, email, password);

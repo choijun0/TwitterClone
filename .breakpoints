@@ -3,9 +3,9 @@
     "src/routes/Auth.js": [
       {
         "id": "efc006cc-ae4b-43ef-ba12-4f7161ee3a2a",
-        "line": 27,
-        "version": 854,
-        "index": 789
+        "line": 32,
+        "version": 1394,
+        "index": 854
       }
     ]
   }
