@@ -1,31 +1,31 @@
 import React, {useState, useEffect} from "react";
-import {addDocumentToCollection, getDataFromCollection} from "fbase";
+import {addDocumentToCollection, getDataFromCollection, watchDataBase} from "fbase";
 
 const TWEET = "tweets";
 
 
 
-const Home=() => {
+const Home=({user}) => {
   const [nweet, setNweet] = useState("");
   const [nweetData, setNweetData] = useState([]);
-  const getData = async ()=>{
-    const querySnapshot = await getDataFromCollection(TWEET);
-    querySnapshot.forEach(doc => {
-      const dataForm = {
-        ...doc.data(),
-        id : doc.id
-      };
-      console.log(dataForm);
-      setNweetData(prev => [dataForm, ...prev]);
-    })
-  } 
+  const updateData = ({docs}) => {
+    const updatedData = docs.map((doc) => ({
+      ...doc.data(),
+      id: doc.id
+    }))
+    setNweetData(updatedData);
+  }
   useEffect(()=>{
-    getData();
+    watchDataBase(TWEET, updateData);
   }
   ,[]);
   const onSubmit = async (event, collection) => {
     event.preventDefault();
-    const dataForm = { comment : nweet, createdAt: Date.now() };
+    const dataForm = { 
+      text : nweet, 
+      createdAt: Date.now(), 
+      creatorId : user.uid 
+      };
     await addDocumentToCollection(collection, dataForm).then(
       (resolve) => console.log(resolve) 
     ).catch(
@@ -49,7 +49,7 @@ const Home=() => {
    <div>
         {nweetData.map((nweet) => (
           <div key={nweet.id}>
-            <h4>{nweet.comment}</h4>
+            <h4>{nweet.text}</h4>
           </div>
         ))}
       </div>

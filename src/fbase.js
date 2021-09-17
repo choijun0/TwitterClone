@@ -1,6 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, addDoc, getDocs, collection } from "firebase/firestore"
-
+import { getFirestore, addDoc, getDocs, collection, doc, onSnapshot, query } from "firebase/firestore"
 
 import { getAuth, 
 createUserWithEmailAndPassword, 
@@ -56,4 +55,13 @@ export const addDocumentToCollection = (collectionName, data) =>{
 
 export const getDataFromCollection = (collectionName) => {
   return getDocs(collection(database, collectionName));
+}
+
+export const watchDataBase = (collectionName, callback) => {
+  const q = query(collection(database, collectionName));
+  const unsub = onSnapshot(q, (snapShot) => {
+    if(callback) {
+      callback(snapShot);
+    }
+  });
 }
