@@ -1,4 +1,6 @@
 import { initializeApp } from "firebase/app";
+import { getFirestore, addDoc, getDocs, collection } from "firebase/firestore"
+
 
 import { getAuth, 
 createUserWithEmailAndPassword, 
@@ -18,6 +20,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const database = getFirestore(); 
 
 export const authService = getAuth(); 
 
@@ -46,3 +49,11 @@ export const signInAccount = (email, password) => {
   return signInWithEmailAndPassword(authService, email, password);
 }
 
+
+export const addDocumentToCollection = (collectionName, data) =>{
+  return addDoc(collection(database, collectionName), data);
+}
+
+export const getDataFromCollection = (collectionName) => {
+  return getDocs(collection(database, collectionName));
+}
