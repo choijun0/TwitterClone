@@ -1,9 +1,8 @@
 import React, {useState, useEffect} from "react";
 import {addDocumentToCollection, getDataFromCollection, watchDataBase} from "fbase";
+import Nweet from "components/Nweet"
 
-const TWEET = "tweets";
-
-
+export const TWEET = "tweets";
 
 const Home=({user}) => {
   const [nweet, setNweet] = useState("");
@@ -48,9 +47,11 @@ const Home=({user}) => {
    </form>
    <div>
         {nweetData.map((nweet) => (
-          <div key={nweet.id}>
-            <h4>{nweet.text}</h4>
-          </div>
+          <Nweet
+            key={nweet.id}
+            nweetObj={nweet}
+            isOwner={nweet.creatorId === user.uid}
+          />
         ))}
       </div>
   </>

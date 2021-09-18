@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, addDoc, getDocs, collection, doc, onSnapshot, query } from "firebase/firestore"
+import { getFirestore, addDoc, getDocs, collection, doc, onSnapshot, query,
+updateDoc, deleteField, deleteDoc } from "firebase/firestore"
 
 import { getAuth, 
 createUserWithEmailAndPassword, 
@@ -58,10 +59,19 @@ export const getDataFromCollection = (collectionName) => {
 }
 
 export const watchDataBase = (collectionName, callback) => {
-  const q = query(collection(database, collectionName));
-  const unsub = onSnapshot(q, (snapShot) => {
+  const unsub = onSnapshot(collection(database, collectionName), (snapShot) => {
     if(callback) {
       callback(snapShot);
     }
   });
+}
+
+export const deleteDocumentById = (collectionName, documentName) => {
+  console.log(collectionName, documentName);
+  return deleteDoc(doc(database, collectionName, documentName));
+}
+
+export const updateDocumentById = (collectionName, documentName, data) => {
+  console.log(collectionName, documentName, data);
+  return updateDoc(doc(database, collectionName, documentName), data);
 }
