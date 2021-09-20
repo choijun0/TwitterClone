@@ -1,14 +1,34 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, addDoc, getDocs, collection, doc, onSnapshot, query,
-updateDoc, deleteField, deleteDoc } from "firebase/firestore"
-
-import { getAuth, 
+import { 
+getAuth, 
 createUserWithEmailAndPassword, 
 signInWithEmailAndPassword,
 signInWithPopup,
 GoogleAuthProvider,
 GithubAuthProvider
- } from "firebase/auth";
+} from "firebase/auth";
+
+import { 
+getFirestore, 
+addDoc, 
+getDocs, 
+collection, 
+doc, 
+onSnapshot, 
+query,
+updateDoc, 
+deleteField, 
+deleteDoc 
+} from "firebase/firestore"
+
+import {
+getStorage, 
+ref, 
+uploadString, 
+getDownloadURL,
+deleteObject
+} from "firebase/storage"
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyDaLLllqTNcmnuUw9Pt53NBiVfq3uA9zg4",
@@ -19,11 +39,11 @@ const firebaseConfig = {
   appId: "1:1035859157301:web:9006337e5e06cfe58f2c7c"
 };
 
+//#.0 App
 const app = initializeApp(firebaseConfig);
-const database = getFirestore(); 
 
-export const authService = getAuth(); 
-
+//#.1 Auth
+export const authService = getAuth(app); 
 
 export const popupSignInWithProviders = provider_Name => {
   console.log(provider_Name);
@@ -49,6 +69,8 @@ export const signInAccount = (email, password) => {
   return signInWithEmailAndPassword(authService, email, password);
 }
 
+//#.2 FireStore
+const database = getFirestore(app); 
 
 export const addDocumentToCollection = (collectionName, data) =>{
   return addDoc(collection(database, collectionName), data);
@@ -74,4 +96,22 @@ export const deleteDocumentById = (collectionName, documentName) => {
 export const updateDocumentById = (collectionName, documentName, data) => {
   console.log(collectionName, documentName, data);
   return updateDoc(doc(database, collectionName, documentName), data);
+}
+
+//#.3 Storage
+const storageService = getStorage(app);
+
+export const uploadStringData = async (path, string) => {
+  const fileRef = ref(storageService, path);
+  await uploadString(fileRef, string, "data_url");
+} 
+
+export const getDownloadUrlFromStorage = async (path, callback) => {
+  const fileRef = ref(storageService, path);
+  await getDownloadURL(fileRef).then(url => callback(url));
+}
+
+export const deleteStorageDataByUrl = (url) => {
+  const fileRef = ref(storageService, url);
+  deleteObject(fileRef);
 }

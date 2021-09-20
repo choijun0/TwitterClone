@@ -1,15 +1,17 @@
 import React, { useState } from "react";
-import {deleteDocumentById, updateDocumentById} from "fbase";
+import {deleteDocumentById, updateDocumentById, deleteStorageDataByUrl} from "fbase";
 import { TWEET } from "routes/Home"
 
 
 const Nweet = ({ nweetObj, isOwner }) => {
   const [editing, setEditing] = useState(false);
   const [updatedTweet, setupdatedTweet] = useState(nweetObj.text);
+  const {photoDownloadUrl} = nweetObj;
   const onDeleteClick = async () => {
     const ok = window.confirm("Are you sure? >_<");
     if (ok) {
       deleteDocumentById(TWEET, nweetObj.id)
+      deleteStorageDataByUrl(nweetObj.photoDownloadUrl); 
     }
   };
   const onChange = e => {
@@ -38,7 +40,10 @@ const Nweet = ({ nweetObj, isOwner }) => {
             <input type="submit" value="Let's update!!" />
           </form>
           <button onClick={toggleEditing}>Cancel</button>
-    </> : <h4>{nweetObj.text}</h4>}
+    </> : <>
+      <h4>{nweetObj.text}</h4>
+      {photoDownloadUrl && <img src={photoDownloadUrl} width="50px" height="50px"/>}
+    </> }
       {isOwner && (
          <>
            <button onClick={onDeleteClick}>Delete Nweet</button>
