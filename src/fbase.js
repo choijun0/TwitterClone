@@ -5,7 +5,8 @@ createUserWithEmailAndPassword,
 signInWithEmailAndPassword,
 signInWithPopup,
 GoogleAuthProvider,
-GithubAuthProvider
+GithubAuthProvider,
+updateProfile
 } from "firebase/auth";
 
 import { 
@@ -18,7 +19,8 @@ onSnapshot,
 query,
 updateDoc, 
 deleteField, 
-deleteDoc 
+deleteDoc,
+where 
 } from "firebase/firestore"
 
 import {
@@ -69,6 +71,10 @@ export const signInAccount = (email, password) => {
   return signInWithEmailAndPassword(authService, email, password);
 }
 
+export const updateUserProfile = (updateData) => {
+  return updateProfile(authService.currentUser, updateData);
+}
+
 //#.2 FireStore
 const database = getFirestore(app); 
 
@@ -96,6 +102,11 @@ export const deleteDocumentById = (collectionName, documentName) => {
 export const updateDocumentById = (collectionName, documentName, data) => {
   console.log(collectionName, documentName, data);
   return updateDoc(doc(database, collectionName, documentName), data);
+}
+
+export const getDocumentByQuery = (collectionName, prop, operator, condition) => {
+  const q = query(collection(database, collectionName), where(prop, operator, condition));
+  return getDocs(q);
 }
 
 //#.3 Storage
